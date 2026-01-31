@@ -1,0 +1,13 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#1a1410"/>
+  <text x="400" y="280" font-family="Georgia" font-size="32" fill="#8b1a1a" text-anchor="middle">
+    The Ruined Throne Room
+  </text>
+  <text x="400" y="320" font-family="Georgia" font-size="18" fill="#8b7d6b" text-anchor="middle">
+    Where the crown fell and magic became evidence
+  </text>
+  <circle cx="400" cy="420" r="60" fill="none" stroke="#c9a961" stroke-width="3"/>
+  <text x="400" y="430" font-family="serif" font-size="48" fill="#c9a961" text-anchor="middle">
+    ♛
+  </text>
+</svg>

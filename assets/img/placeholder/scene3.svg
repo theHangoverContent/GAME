@@ -1,0 +1,13 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#0f0b08"/>
+  <text x="400" y="280" font-family="Georgia" font-size="32" fill="#c9a961" text-anchor="middle">
+    The Remembered Room
+  </text>
+  <text x="400" y="320" font-family="Georgia" font-size="18" fill="#8b7d6b" text-anchor="middle">
+    Memory speaks where presence should not exist
+  </text>
+  <ellipse cx="400" cy="420" rx="120" ry="80" fill="none" stroke="#8b1a1a" stroke-width="2" opacity="0.6"/>
+  <text x="400" y="430" font-family="Georgia" font-size="20" fill="#8b1a1a" text-anchor="middle" opacity="0.8">
+    THE ECHO
+  </text>
+</svg>

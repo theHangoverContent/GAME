@@ -1,0 +1,13 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#2a2520"/>
+  <text x="400" y="280" font-family="Georgia" font-size="32" fill="#c9a961" text-anchor="middle">
+    The Ash Antechamber
+  </text>
+  <text x="400" y="320" font-family="Georgia" font-size="18" fill="#8b7d6b" text-anchor="middle">
+    A chamber that once welcomed petitions and punishments
+  </text>
+  <rect x="300" y="350" width="200" height="150" fill="#3a3530" stroke="#c9a961" stroke-width="2"/>
+  <text x="400" y="430" font-family="Courier" font-size="14" fill="#c9a961" text-anchor="middle">
+    SCENE I
+  </text>
+</svg>

@@ -1,0 +1,641 @@
+/* ===========================
+   Royal Dossier Theme
+   Parchment + stamps + official documents
+   =========================== */
+
+:root {
+  --parchment: #f4ede3;
+  --parchment-dark: #e8dcc8;
+  --ink-black: #1a1410;
+  --ink-faded: #4a4035;
+  --seal-red: #8b1a1a;
+  --seal-gold: #c9a961;
+  --border-dark: #6b5d4f;
+  --shadow: rgba(0, 0, 0, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Georgia', 'Garamond', serif;
+  background: linear-gradient(135deg, #3a2f26 0%, #1a1410 100%);
+  color: var(--ink-black);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+   Header
+   =========================== */
+.game-header {
+  background: var(--parchment);
+  border-bottom: 3px solid var(--border-dark);
+  padding: 1.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+#game-title {
+  font-size: 2.5rem;
+  font-weight: normal;
+  color: var(--seal-red);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+/* ===========================
+   Main Game Container
+   =========================== */
+.game-container {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+  padding: 2rem;
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===========================
+   Scene Panel (Left)
+   =========================== */
+.scene-panel {
+  background: var(--parchment-dark);
+  border: 2px solid var(--border-dark);
+  padding: 1rem;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.scene-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-dark);
+  display: block;
+  background: #666;
+  min-height: 400px;
+  object-fit: cover;
+}
+
+/* ===========================
+   Narrative Panel (Right)
+   =========================== */
+.narrative-panel {
+  background: var(--parchment);
+  border: 2px solid var(--border-dark);
+  padding: 2rem;
+  box-shadow: 0 4px 12px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.scene-header {
+  border-bottom: 2px solid var(--seal-gold);
+  padding-bottom: 1rem;
+}
+
+#scene-title {
+  font-size: 1.75rem;
+  font-weight: normal;
+  color: var(--seal-red);
+  margin-bottom: 0.5rem;
+}
+
+.dossier-stamp {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--seal-red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+/* ===========================
+   Narrative Content
+   =========================== */
+.narrative-content {
+  flex: 1;
+  line-height: 1.8;
+}
+
+.narrative-content p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.character-intro {
+  background: var(--parchment-dark);
+  border-left: 3px solid var(--seal-gold);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.character-intro strong {
+  color: var(--seal-red);
+}
+
+/* ===========================
+   Hotspots Section
+   =========================== */
+.hotspots-section {
+  margin-top: 1rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  color: var(--ink-faded);
+  border-bottom: 1px solid var(--border-dark);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.hotspots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hotspot-item {
+  position: relative;
+}
+
+.hotspot-item.viewed::before {
+  content: '✓';
+  position: absolute;
+  left: -1.5rem;
+  color: var(--seal-gold);
+  font-weight: bold;
+}
+
+.hotspot-btn {
+  width: 100%;
+  background: var(--parchment-dark);
+  border: 2px solid var(--border-dark);
+  padding: 0.75rem 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  color: var(--ink-black);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.hotspot-btn:hover {
+  background: var(--seal-gold);
+  border-color: var(--seal-red);
+  transform: translateX(5px);
+}
+
+.hotspot-btn:active {
+  transform: translateX(3px);
+}
+
+/* ===========================
+   Choices
+   =========================== */
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--parchment-dark);
+  border: 2px dashed var(--border-dark);
+}
+
+.choice-btn {
+  background: var(--parchment);
+  border: 2px solid var(--seal-red);
+  padding: 1rem 1.5rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  color: var(--ink-black);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.choice-btn:hover {
+  background: var(--seal-red);
+  color: var(--parchment);
+  transform: scale(1.02);
+}
+
+/* ===========================
+   Back Button
+   =========================== */
+.back-button-container {
+  margin-top: 1.5rem;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--border-dark);
+  padding: 0.5rem 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: var(--ink-faded);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--parchment-dark);
+  color: var(--ink-black);
+}
+
+/* ===========================
+   Proceed Button
+   =========================== */
+.proceed-container {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.proceed-btn {
+  background: var(--seal-red);
+  border: 2px solid var(--ink-black);
+  padding: 1rem 2rem;
+  font-family: 'Georgia', serif;
+  font-size: 1.1rem;
+  color: var(--parchment);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.proceed-btn:hover {
+  background: var(--ink-black);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* ===========================
+   Puzzle Interface
+   =========================== */
+.puzzle-container {
+  background: var(--parchment-dark);
+  border: 3px double var(--border-dark);
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.puzzle-intro {
+  margin-bottom: 1rem;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+.puzzle-instruction {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--seal-red);
+}
+
+.symbols-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.symbol-btn {
+  background: var(--parchment);
+  border: 2px solid var(--border-dark);
+  padding: 1.5rem 1rem;
+  font-family: 'Georgia', serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.symbol-glyph {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.symbol-btn:hover {
+  background: var(--seal-gold);
+  border-color: var(--seal-red);
+  transform: scale(1.05);
+}
+
+.solution-display {
+  background: var(--parchment);
+  border: 2px solid var(--seal-gold);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+#solution-text {
+  color: var(--seal-red);
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.puzzle-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.puzzle-btn-clear,
+.puzzle-btn-submit {
+  padding: 0.75rem 1.5rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 2px solid var(--border-dark);
+  transition: all 0.2s;
+}
+
+.puzzle-btn-clear {
+  background: var(--parchment-dark);
+  color: var(--ink-black);
+}
+
+.puzzle-btn-submit {
+  background: var(--seal-red);
+  color: var(--parchment);
+}
+
+.puzzle-btn-clear:hover,
+.puzzle-btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.puzzle-success {
+  background: #d4edda;
+  border: 2px solid #28a745;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  color: #155724;
+}
+
+.puzzle-failure {
+  background: #f8d7da;
+  border: 2px solid #dc3545;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  color: #721c24;
+}
+
+/* ===========================
+   Ending
+   =========================== */
+.ending-text {
+  background: var(--parchment-dark);
+  border: 3px double var(--seal-gold);
+  padding: 2rem;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  line-height: 2;
+}
+
+.credits {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--border-dark);
+  color: var(--ink-faded);
+}
+
+.restart-btn {
+  background: var(--seal-red);
+  border: 2px solid var(--ink-black);
+  padding: 0.75rem 2rem;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  color: var(--parchment);
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
+
+.restart-btn:hover {
+  background: var(--ink-black);
+}
+
+/* ===========================
+   Footer: Clues & Lore
+   =========================== */
+.game-footer {
+  background: var(--parchment);
+  border-top: 3px solid var(--border-dark);
+  padding: 1.5rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  box-shadow: 0 -2px 8px var(--shadow);
+}
+
+.footer-title {
+  font-size: 1rem;
+  color: var(--seal-red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--seal-gold);
+  padding-bottom: 0.5rem;
+}
+
+.clues-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.clue-chip {
+  background: var(--seal-gold);
+  color: var(--ink-black);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-dark);
+  cursor: help;
+}
+
+.lore-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lore-item {
+  display: flex;
+  align-items: center;
+}
+
+.lore-item.locked {
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+.lore-btn {
+  background: transparent;
+  border: 1px solid var(--seal-red);
+  padding: 0.5rem 1rem;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: var(--seal-red);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.lore-btn:hover {
+  background: var(--seal-red);
+  color: var(--parchment);
+}
+
+/* ===========================
+   Lore Modal
+   =========================== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--parchment);
+  border: 4px solid var(--seal-red);
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px var(--shadow);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--seal-red);
+  color: var(--parchment);
+  border: none;
+  font-size: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--ink-black);
+  transform: rotate(90deg);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  color: var(--seal-red);
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--seal-gold);
+  padding-bottom: 0.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+/* ===========================
+   Lore Unlock Notification
+   =========================== */
+.lore-notification {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: var(--seal-gold);
+  color: var(--ink-black);
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--seal-red);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px var(--shadow);
+  z-index: 999;
+  animation: slideIn 0.3s ease-out;
+  font-weight: bold;
+}
+
+.lore-notification.fade-out {
+  animation: fadeOut 0.5s ease-out;
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ===========================
+   Responsive Design
+   =========================== */
+@media (max-width: 968px) {
+  .game-container {
+    grid-template-columns: 1fr;
+  }
+
+  .game-footer {
+    grid-template-columns: 1fr;
+  }
+
+  #game-title {
+    font-size: 2rem;
+  }
+
+  .narrative-panel {
+    max-height: none;
+  }
+}
