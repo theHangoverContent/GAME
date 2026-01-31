@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crownline: Prologue</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="game-header">
+    <h1 id="game-title">Crownline: Prologue</h1>
+    <p class="subtitle" id="game-subtitle">A royal dossier recovered from the ruins</p>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="game-container">
+    <!-- Left Panel: Scene Image -->
+    <section class="scene-panel">
+      <img id="scene-image" src="assets/img/placeholder/scene1.svg" alt="Scene" class="scene-image">
+    </section>
+
+    <!-- Right Panel: Narrative & Interaction -->
+    <section class="narrative-panel">
+      <!-- Scene Header -->
+      <div class="scene-header">
+        <h2 id="scene-title">Scene I — The Ash Antechamber</h2>
+        <div class="dossier-stamp" id="scene-stamp">INTAKE // RUINS-SECTOR 7</div>
+      </div>
+
+      <!-- Narrative Text Area -->
+      <div class="narrative-content" id="narrative-text">
+        <p>Loading...</p>
+      </div>
+
+      <!-- Hotspots List -->
+      <div class="hotspots-section">
+        <h3 class="section-title">Investigation Points</h3>
+        <div id="hotspots-list" class="hotspots-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Proceed Button Container -->
+      <div id="proceed-container" class="proceed-container">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Panel: Clues & Lore -->
+  <footer class="game-footer">
+    <div class="clues-section">
+      <h3 class="footer-title">Clues Collected</h3>
+      <div id="clues-list" class="clues-list">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
+    <div class="lore-section">
+      <h3 class="footer-title">Lore Archive</h3>
+      <div id="lore-list" class="lore-list">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lore Modal -->
+  <div id="lore-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="lore-modal-close">&times;</button>
+      <h2 id="lore-modal-title" class="modal-title">Lore Title</h2>
+      <div id="lore-modal-body" class="modal-body">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
