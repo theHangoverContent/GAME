@@ -405,7 +405,7 @@ function updatePuzzleFooter(puzzle) {
   $("#modalFooter").textContent =
     picked.length === 0
       ? "Select three sigils in order."
-      : `Selected: ${picked.join(" ")} (${picked.length}/3)`;
+      : `Selected: ${picked.join("  ")} (${picked.length}/3)`;
 }
 
 function closeModal() {
