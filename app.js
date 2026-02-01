@@ -706,11 +706,14 @@ function showLoreModal(loreId) {
   modal.style.display = 'flex';
   
   // Focus the close button for accessibility
-  setTimeout(() => {
-    if (modalCloseBtn) {
-      modalCloseBtn.focus();
-    }
-  }, 100);
+  // Use requestAnimationFrame for more reliable focus timing
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (modalCloseBtn) {
+        modalCloseBtn.focus();
+      }
+    });
+  });
 }
 
 function closeLoreModal() {
@@ -738,6 +741,24 @@ function showLoreUnlockNotification(loreId) {
     notification.classList.add('fade-out');
     setTimeout(() => notification.remove(), 500);
   }, 3000);
+}
+
+// =========================
+// Keyboard Event Handling
+// =========================
+let keyboardListenersInitialized = false;
+
+function setupKeyboardListeners() {
+  if (keyboardListenersInitialized) return;
+  
+  document.addEventListener('keydown', (e) => {
+    const loreModal = document.getElementById('lore-modal');
+    if (e.key === 'Escape' && loreModal && loreModal.style.display === 'flex') {
+      closeLoreModal();
+    }
+  });
+  
+  keyboardListenersInitialized = true;
 }
 
 // =========================
@@ -770,16 +791,12 @@ function init() {
         closeLoreModal();
       }
     });
-    
-    // Add keyboard support for modal
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && loreModal.style.display === 'flex') {
-        closeLoreModal();
-      }
-    });
   } else {
     console.warn('Lore modal not found');
   }
+  
+  // Set up keyboard listeners (only once)
+  setupKeyboardListeners();
   
   // Set game title
   const gameTitle = document.getElementById('game-title');
