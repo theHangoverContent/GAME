@@ -4,7 +4,7 @@
 
 1. Go to your GitHub repository settings
 2. Navigate to "Pages" in the left sidebar
-3. Under "Source", select the branch: `copilot/setup-prologue-screen-1`
+3. Under "Source", select the branch: `copilot/save-code-changes`
 4. Select folder: `/ (root)`
 5. Click "Save"
 6. Wait a few minutes for deployment
@@ -64,12 +64,14 @@ All narrative, puzzles, and lore are in `content.js`:
 
 ### Styling Changes
 
-Modify `styles.css` CSS variables:
+Modify `styles.css` CSS variables for the dark royal dossier theme:
 ```css
 :root {
-  --parchment: #f4ede3;      /* Main background */
-  --seal-red: #8b1a1a;       /* Primary accent */
-  --seal-gold: #c9a961;      /* Secondary accent */
+  --bg: #0f1113;           /* Dark background */
+  --paper: #14171a;        /* Card background */
+  --ink: #e7e1d7;          /* Text color */
+  --muted: #b6afa6;        /* Muted text */
+  --accent: rgba(231, 225, 215, 0.9);  /* Accent color */
   /* ... more variables ... */
 }
 ```
