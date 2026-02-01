@@ -106,22 +106,40 @@ function renderScene(sceneId) {
   
   // Update scene image
   const sceneImg = document.getElementById('scene-image');
+  if (!sceneImg) {
+    console.error('DOM element not found: scene-image');
+    return;
+  }
   sceneImg.src = scene.image;
   sceneImg.alt = scene.title;
   
   // Update header
-  document.getElementById('scene-title').textContent = scene.title;
-  document.getElementById('scene-stamp').textContent = scene.dossierStamp;
+  const sceneTitle = document.getElementById('scene-title');
+  const sceneStamp = document.getElementById('scene-stamp');
+  if (!sceneTitle || !sceneStamp) {
+    console.error('DOM elements not found: scene-title or scene-stamp');
+    return;
+  }
+  sceneTitle.textContent = scene.title;
+  sceneStamp.textContent = scene.dossierStamp;
   
   // Render entry text
   const narrativeDiv = document.getElementById('narrative-text');
+  if (!narrativeDiv) {
+    console.error('DOM element not found: narrative-text');
+    return;
+  }
   narrativeDiv.innerHTML = '';
   
-  scene.entryText.forEach(para => {
-    const p = document.createElement('p');
-    p.textContent = para;
-    narrativeDiv.appendChild(p);
-  });
+  if (!scene.entryText || !Array.isArray(scene.entryText)) {
+    console.warn('Scene entry text missing or invalid:', sceneId);
+  } else {
+    scene.entryText.forEach(para => {
+      const p = document.createElement('p');
+      p.textContent = para;
+      narrativeDiv.appendChild(p);
+    });
+  }
   
   // Render characters
   if (scene.characters && scene.characters.length > 0) {
@@ -144,9 +162,22 @@ function renderScene(sceneId) {
 
 function renderHotspots(scene) {
   const hotspotsContainer = document.getElementById('hotspots-list');
+  if (!hotspotsContainer) {
+    console.error('DOM element not found: hotspots-list');
+    return;
+  }
   hotspotsContainer.innerHTML = '';
   
+  if (!scene.hotspots || !Array.isArray(scene.hotspots)) {
+    console.warn('Scene hotspots missing or invalid:', scene.id);
+    return;
+  }
+  
   scene.hotspots.forEach(hotspot => {
+    if (!hotspot.id || !hotspot.label) {
+      console.warn('Hotspot missing required fields (id or label):', hotspot);
+      return;
+    }
     // Check if hotspot should be shown
     if (hotspot.showIf && !checkConditions(hotspot.showIf)) {
       return; // Skip this hotspot
@@ -163,6 +194,8 @@ function renderHotspots(scene) {
     const button = document.createElement('button');
     button.className = 'hotspot-btn';
     button.textContent = hotspot.label;
+    button.setAttribute('role', 'button');
+    button.setAttribute('aria-label', `Investigate: ${hotspot.label}`);
     button.addEventListener('click', () => handleHotspotClick(hotspot, scene));
     
     hotspotDiv.appendChild(button);
@@ -172,9 +205,13 @@ function renderHotspots(scene) {
 
 function renderProceedButton(scene) {
   const proceedContainer = document.getElementById('proceed-container');
+  if (!proceedContainer) {
+    console.error('DOM element not found: proceed-container');
+    return;
+  }
   proceedContainer.innerHTML = '';
   
-  if (scene.proceed && checkConditions(scene.proceed.conditions || [])) {
+  if (scene.proceed && scene.proceed.nextScene && checkConditions(scene.proceed.conditions || [])) {
     const button = document.createElement('button');
     button.className = 'proceed-btn';
     button.textContent = scene.proceed.label;
@@ -194,10 +231,14 @@ function handleHotspotClick(hotspot, scene) {
   state.viewedHotspots.add(hotspot.id);
   
   const narrativeDiv = document.getElementById('narrative-text');
+  if (!narrativeDiv) {
+    console.error('DOM element not found: narrative-text');
+    return;
+  }
   narrativeDiv.innerHTML = '';
   
   // Show hotspot text
-  if (hotspot.text) {
+  if (hotspot.text && Array.isArray(hotspot.text)) {
     hotspot.text.forEach(para => {
       const p = document.createElement('p');
       p.textContent = para;
@@ -234,6 +275,7 @@ function renderChoices(choices, scene) {
     const button = document.createElement('button');
     button.className = 'choice-btn';
     button.textContent = choice.label;
+    button.setAttribute('role', 'button');
     button.addEventListener('click', () => handleChoice(choice, scene));
     choicesDiv.appendChild(button);
   });
@@ -245,10 +287,14 @@ function handleChoice(choice, scene) {
   playClick();
   
   const narrativeDiv = document.getElementById('narrative-text');
+  if (!narrativeDiv) {
+    console.error('DOM element not found: narrative-text');
+    return;
+  }
   narrativeDiv.innerHTML = '';
   
   // Show result text
-  if (choice.resultText) {
+  if (choice.resultText && Array.isArray(choice.resultText)) {
     choice.resultText.forEach(para => {
       const p = document.createElement('p');
       p.textContent = para;
@@ -295,6 +341,16 @@ function renderBackButton(scene) {
 // =========================
 function renderPuzzle(puzzleId, scene) {
   const currentScene = GAME.scenes[scene.id];
+  if (!currentScene) {
+    console.error('Scene not found:', scene.id);
+    return;
+  }
+  
+  if (!currentScene.puzzles) {
+    console.error('No puzzles defined for scene:', scene.id);
+    return;
+  }
+  
   const puzzle = currentScene.puzzles[puzzleId];
   
   if (!puzzle) {
@@ -306,16 +362,22 @@ function renderPuzzle(puzzleId, scene) {
   state.puzzleSolution = [];
   
   const narrativeDiv = document.getElementById('narrative-text');
+  if (!narrativeDiv) {
+    console.error('DOM element not found: narrative-text');
+    return;
+  }
   narrativeDiv.innerHTML = '';
   
   // Puzzle intro
   const introDiv = document.createElement('div');
   introDiv.className = 'puzzle-intro';
-  puzzle.intro.forEach(para => {
-    const p = document.createElement('p');
-    p.textContent = para;
-    introDiv.appendChild(p);
-  });
+  if (puzzle.intro && Array.isArray(puzzle.intro)) {
+    puzzle.intro.forEach(para => {
+      const p = document.createElement('p');
+      p.textContent = para;
+      introDiv.appendChild(p);
+    });
+  }
   narrativeDiv.appendChild(introDiv);
   
   // Symbol selection interface
@@ -331,14 +393,22 @@ function renderPuzzle(puzzleId, scene) {
   const symbolsDiv = document.createElement('div');
   symbolsDiv.className = 'symbols-grid';
   
-  GAME.symbols.forEach(symbol => {
-    const symbolBtn = document.createElement('button');
-    symbolBtn.className = 'symbol-btn';
-    symbolBtn.innerHTML = `<span class="symbol-glyph">${symbol.glyph}</span><br><small>${symbol.label}</small>`;
-    symbolBtn.dataset.symbolId = symbol.id;
-    symbolBtn.addEventListener('click', () => addSymbolToSolution(symbol.id));
-    symbolsDiv.appendChild(symbolBtn);
-  });
+  if (!GAME.symbols || !Array.isArray(GAME.symbols)) {
+    console.error('GAME.symbols not defined or invalid');
+  } else {
+    GAME.symbols.forEach(symbol => {
+      if (!symbol.id || !symbol.label || !symbol.glyph) {
+        console.warn('Symbol missing required fields:', symbol);
+        return;
+      }
+      const symbolBtn = document.createElement('button');
+      symbolBtn.className = 'symbol-btn';
+      symbolBtn.innerHTML = `<span class="symbol-glyph">${symbol.glyph}</span><br><small>${symbol.label}</small>`;
+      symbolBtn.dataset.symbolId = symbol.id;
+      symbolBtn.addEventListener('click', () => addSymbolToSolution(symbol.id));
+      symbolsDiv.appendChild(symbolBtn);
+    });
+  }
   
   puzzleDiv.appendChild(symbolsDiv);
   
@@ -388,11 +458,16 @@ function clearSolution() {
 
 function updateSolutionDisplay() {
   const solutionText = document.getElementById('solution-text');
+  if (!solutionText) {
+    console.warn('DOM element not found: solution-text');
+    return;
+  }
+  
   if (state.puzzleSolution.length === 0) {
     solutionText.textContent = '—';
   } else {
     const glyphs = state.puzzleSolution.map(id => {
-      const symbol = GAME.symbols.find(s => s.id === id);
+      const symbol = GAME.symbols ? GAME.symbols.find(s => s.id === id) : null;
       return symbol ? symbol.glyph : '?';
     });
     solutionText.textContent = glyphs.join(' → ');
@@ -403,9 +478,23 @@ function checkPuzzleSolution(scene) {
   playClick();
   
   const puzzle = state.activePuzzle;
+  if (!puzzle) {
+    console.error('No active puzzle to check');
+    return;
+  }
+  
+  if (!puzzle.correctOrder || !Array.isArray(puzzle.correctOrder)) {
+    console.error('Puzzle missing correctOrder:', puzzle);
+    return;
+  }
+  
   const correct = JSON.stringify(state.puzzleSolution) === JSON.stringify(puzzle.correctOrder);
   
   const narrativeDiv = document.getElementById('narrative-text');
+  if (!narrativeDiv) {
+    console.error('DOM element not found: narrative-text');
+    return;
+  }
   narrativeDiv.innerHTML = '';
   
   if (correct) {
@@ -413,11 +502,13 @@ function checkPuzzleSolution(scene) {
     const successDiv = document.createElement('div');
     successDiv.className = 'puzzle-success';
     
-    puzzle.rewardText.forEach(para => {
-      const p = document.createElement('p');
-      p.textContent = para;
-      successDiv.appendChild(p);
-    });
+    if (puzzle.rewardText && Array.isArray(puzzle.rewardText)) {
+      puzzle.rewardText.forEach(para => {
+        const p = document.createElement('p');
+        p.textContent = para;
+        successDiv.appendChild(p);
+      });
+    }
     
     narrativeDiv.appendChild(successDiv);
     
@@ -471,7 +562,7 @@ function renderEnding() {
   endingDiv.appendChild(basePara);
   
   // Personalized based on flags
-  if (state.flags.cipherSolved) {
+  if (state.flags.sigilPuzzleSolved) {
     const p = document.createElement('p');
     p.textContent = '"And you still unlock what others fear to touch. The cartridge you carry proves it."';
     endingDiv.appendChild(p);
@@ -517,26 +608,52 @@ function renderEnding() {
 // =========================
 function updateCluesDisplay() {
   const cluesContainer = document.getElementById('clues-list');
+  if (!cluesContainer) {
+    console.error('DOM element not found: clues-list');
+    return;
+  }
   cluesContainer.innerHTML = '';
+  
+  if (!GAME.clues) {
+    console.warn('GAME.clues not defined');
+    return;
+  }
   
   state.clues.forEach(clueId => {
     const clue = GAME.clues[clueId];
-    if (clue) {
+    if (clue && clue.title) {
       const chip = document.createElement('div');
       chip.className = 'clue-chip';
       chip.title = clue.desc;
       chip.textContent = clue.title;
       cluesContainer.appendChild(chip);
+    } else {
+      console.warn('Clue not found or missing title:', clueId);
     }
   });
 }
 
 function updateLoreDisplay() {
   const loreContainer = document.getElementById('lore-list');
+  if (!loreContainer) {
+    console.error('DOM element not found: lore-list');
+    return;
+  }
   loreContainer.innerHTML = '';
+  
+  if (!GAME.lore) {
+    console.warn('GAME.lore not defined');
+    return;
+  }
   
   // Show all lore (locked and unlocked)
   Object.keys(GAME.lore).forEach(loreId => {
+    const loreData = GAME.lore[loreId];
+    if (!loreData || !loreData.title) {
+      console.warn('Lore missing or invalid:', loreId);
+      return;
+    }
+    
     const loreItem = document.createElement('div');
     loreItem.className = 'lore-item';
     
@@ -544,7 +661,7 @@ function updateLoreDisplay() {
       loreItem.classList.add('unlocked');
       const button = document.createElement('button');
       button.className = 'lore-btn';
-      button.textContent = GAME.lore[loreId].title;
+      button.textContent = loreData.title;
       button.addEventListener('click', () => showLoreModal(loreId));
       loreItem.appendChild(button);
     } else {
@@ -559,29 +676,57 @@ function updateLoreDisplay() {
 function showLoreModal(loreId) {
   playClick();
   
+  if (!GAME.lore || !GAME.lore[loreId]) {
+    console.error('Lore not found:', loreId);
+    return;
+  }
+  
   const lore = GAME.lore[loreId];
   const modal = document.getElementById('lore-modal');
   const modalTitle = document.getElementById('lore-modal-title');
   const modalBody = document.getElementById('lore-modal-body');
+  const modalCloseBtn = document.getElementById('lore-modal-close');
+  
+  if (!modal || !modalTitle || !modalBody) {
+    console.error('Modal DOM elements not found');
+    return;
+  }
   
   modalTitle.textContent = lore.title;
   modalBody.innerHTML = '';
   
-  lore.body.forEach(para => {
-    const p = document.createElement('p');
-    p.textContent = para;
-    modalBody.appendChild(p);
-  });
+  if (lore.body && Array.isArray(lore.body)) {
+    lore.body.forEach(para => {
+      const p = document.createElement('p');
+      p.textContent = para;
+      modalBody.appendChild(p);
+    });
+  }
   
   modal.style.display = 'flex';
+  
+  // Focus the close button for accessibility
+  setTimeout(() => {
+    if (modalCloseBtn) {
+      modalCloseBtn.focus();
+    }
+  }, 100);
 }
 
 function closeLoreModal() {
   playClick();
-  document.getElementById('lore-modal').style.display = 'none';
+  const modal = document.getElementById('lore-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
 }
 
 function showLoreUnlockNotification(loreId) {
+  if (!GAME.lore || !GAME.lore[loreId]) {
+    console.warn('Lore not found for notification:', loreId);
+    return;
+  }
+  
   const lore = GAME.lore[loreId];
   const notification = document.createElement('div');
   notification.className = 'lore-notification';
@@ -599,19 +744,52 @@ function showLoreUnlockNotification(loreId) {
 // Initialization
 // =========================
 function init() {
+  // Validate GAME content structure
+  if (!GAME || !GAME.meta || !GAME.scenes) {
+    console.error('GAME content is missing or invalid. Cannot initialize.');
+    const narrativeDiv = document.getElementById('narrative-text');
+    if (narrativeDiv) {
+      narrativeDiv.innerHTML = '<p style="color: red;">Error: Game content failed to load. Please refresh the page.</p>';
+    }
+    return;
+  }
+  
   // Set up lore modal close button
-  document.getElementById('lore-modal-close').addEventListener('click', closeLoreModal);
+  const modalCloseBtn = document.getElementById('lore-modal-close');
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', closeLoreModal);
+  } else {
+    console.warn('Lore modal close button not found');
+  }
   
   // Close modal on outside click
-  document.getElementById('lore-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'lore-modal') {
-      closeLoreModal();
-    }
-  });
+  const loreModal = document.getElementById('lore-modal');
+  if (loreModal) {
+    loreModal.addEventListener('click', (e) => {
+      if (e.target.id === 'lore-modal') {
+        closeLoreModal();
+      }
+    });
+    
+    // Add keyboard support for modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && loreModal.style.display === 'flex') {
+        closeLoreModal();
+      }
+    });
+  } else {
+    console.warn('Lore modal not found');
+  }
   
   // Set game title
-  document.getElementById('game-title').textContent = GAME.meta.title;
-  document.getElementById('game-subtitle').textContent = GAME.meta.subtitle;
+  const gameTitle = document.getElementById('game-title');
+  const gameSubtitle = document.getElementById('game-subtitle');
+  if (gameTitle && GAME.meta.title) {
+    gameTitle.textContent = GAME.meta.title;
+  }
+  if (gameSubtitle && GAME.meta.subtitle) {
+    gameSubtitle.textContent = GAME.meta.subtitle;
+  }
   
   // Load sounds
   loadSounds();
@@ -621,7 +799,12 @@ function init() {
   updateLoreDisplay();
   
   // Start first scene
-  renderScene('s1_antechamber');
+  const startScene = 's1_antechamber';
+  if (GAME.scenes[startScene]) {
+    renderScene(startScene);
+  } else {
+    console.error('Starting scene not found:', startScene);
+  }
 }
 
 // Start when DOM is ready

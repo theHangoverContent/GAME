@@ -8,20 +8,20 @@
 </head>
 <body>
   <!-- Header -->
-  <header class="game-header">
+  <header class="game-header" role="banner">
     <h1 id="game-title">Crownline: Prologue</h1>
     <p class="subtitle" id="game-subtitle">A royal dossier recovered from the ruins</p>
   </header>
 
   <!-- Main Game Container -->
-  <main class="game-container">
+  <main class="game-container" role="main">
     <!-- Left Panel: Scene Image -->
-    <section class="scene-panel">
+    <section class="scene-panel" aria-label="Scene Illustration">
       <img id="scene-image" src="assets/img/placeholder/scene1.svg" alt="Scene" class="scene-image">
     </section>
 
     <!-- Right Panel: Narrative & Interaction -->
-    <section class="narrative-panel">
+    <section class="narrative-panel" aria-label="Story Content">
       <!-- Scene Header -->
       <div class="scene-header">
         <h2 id="scene-title">Scene I — The Ash Antechamber</h2>
@@ -29,14 +29,14 @@
       </div>
 
       <!-- Narrative Text Area -->
-      <div class="narrative-content" id="narrative-text">
+      <div class="narrative-content" id="narrative-text" role="article" aria-live="polite">
         <p>Loading...</p>
       </div>
 
       <!-- Hotspots List -->
       <div class="hotspots-section">
         <h3 class="section-title">Investigation Points</h3>
-        <div id="hotspots-list" class="hotspots-list">
+        <div id="hotspots-list" class="hotspots-list" role="list">
           <!-- Dynamically populated -->
         </div>
       </div>
@@ -49,26 +49,26 @@
   </main>
 
   <!-- Bottom Panel: Clues & Lore -->
-  <footer class="game-footer">
+  <footer class="game-footer" role="contentinfo">
     <div class="clues-section">
       <h3 class="footer-title">Clues Collected</h3>
-      <div id="clues-list" class="clues-list">
+      <div id="clues-list" class="clues-list" role="list" aria-label="Collected clues">
         <!-- Dynamically populated -->
       </div>
     </div>
 
     <div class="lore-section">
       <h3 class="footer-title">Lore Archive</h3>
-      <div id="lore-list" class="lore-list">
+      <div id="lore-list" class="lore-list" role="list" aria-label="Lore entries">
         <!-- Dynamically populated -->
       </div>
     </div>
   </footer>
 
   <!-- Lore Modal -->
-  <div id="lore-modal" class="modal">
+  <div id="lore-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="lore-modal-title">
     <div class="modal-content">
-      <button class="modal-close" id="lore-modal-close">&times;</button>
+      <button class="modal-close" id="lore-modal-close" aria-label="Close lore modal">&times;</button>
       <h2 id="lore-modal-title" class="modal-title">Lore Title</h2>
       <div id="lore-modal-body" class="modal-body">
         <!-- Dynamically populated -->
