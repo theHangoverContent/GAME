@@ -624,7 +624,9 @@ function updateCluesDisplay() {
     if (clue && clue.title) {
       const chip = document.createElement('div');
       chip.className = 'clue-chip';
-      chip.title = clue.desc;
+      if (clue.desc) {
+        chip.title = clue.desc;
+      }
       chip.textContent = clue.title;
       cluesContainer.appendChild(chip);
     } else {
@@ -706,7 +708,8 @@ function showLoreModal(loreId) {
   modal.style.display = 'flex';
   
   // Focus the close button for accessibility
-  // Use requestAnimationFrame for more reliable focus timing
+  // Double requestAnimationFrame ensures DOM has fully updated and styles are applied
+  // before setting focus. Single RAF may execute before display:flex is rendered.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       if (modalCloseBtn) {
@@ -746,6 +749,8 @@ function showLoreUnlockNotification(loreId) {
 // =========================
 // Keyboard Event Handling
 // =========================
+// Module-level flag to ensure keyboard listeners are only attached once
+// This prevents duplicate listeners if init() is somehow called multiple times
 let keyboardListenersInitialized = false;
 
 function setupKeyboardListeners() {
