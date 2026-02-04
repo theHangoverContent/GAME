@@ -155,7 +155,6 @@ function render() {
         const btn = document.createElement("button");
         btn.className = "hotspot";
         btn.textContent = hs.label || "Action";
-        btn.setAttribute("aria-label", `Investigate: ${hs.label || "Action"}`);
         btn.onclick = () => {
           clickSfx();
           handleHotspot(hs, scene);
@@ -501,7 +500,7 @@ function openSigilOrderPuzzle(puzzle) {
     clickSfx();
     const ok =
       state.puzzle.selected.length === 3 &&
-      puzzle.correctOrder &&
+      Array.isArray(puzzle.correctOrder) &&
       state.puzzle.selected.every((id, i) => id === puzzle.correctOrder[i]);
 
     if (ok) {
