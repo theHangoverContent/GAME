@@ -9,7 +9,7 @@
 
   <body>
     <div class="app">
-      <header class="topbar">
+      <header class="topbar" role="banner">
         <div class="brand">
           <div class="title" id="gameTitle">Crownline: Prologue</div>
           <div class="subtitle" id="gameSubtitle">A royal dossier recovered from the ruins</div>
@@ -20,9 +20,9 @@
         </div>
       </header>
 
-      <main class="layout">
+      <main class="layout" role="main">
         <!-- Left: Scene -->
-        <section class="scene">
+        <section class="scene" role="article">
           <div class="sceneHeader">
             <div class="sceneTitle" id="sceneTitle">Scene</div>
             <div class="stamp" id="stamp">STAMP</div>
@@ -38,7 +38,7 @@
         </section>
 
         <!-- Right: Dossier sidebar -->
-        <aside class="dossier">
+        <aside class="dossier" role="complementary">
           <div class="panel">
             <div class="panelTitle">Hotspots</div>
             <div class="panelBody">
@@ -64,7 +64,7 @@
       </main>
 
       <!-- Modal -->
-      <div class="modal" id="modal">
+      <div class="modal" id="modal" role="dialog" aria-modal="true">
         <div class="backdrop" id="modalBackdrop"></div>
         <div class="sheet">
           <div class="sheetHeader">
