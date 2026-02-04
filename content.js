@@ -321,7 +321,7 @@ export const GAME = {
             "And a sealed folio stamped BLACK LIBRARY.",
           ],
           effectsOnSolve: [
-            { type: "addFlag", flag: "cipherSolved", value: true },
+            { type: "addFlag", flag: "sigilPuzzleSolved", value: true },
             { type: "addLore", loreId: "lore_blacklibrary" },
             { type: "addLore", loreId: "lore_unicorns" },
           ],

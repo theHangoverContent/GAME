@@ -72,30 +72,68 @@ function setScene(sceneId) {
 }
 
 function render() {
-  const scene = GAME.scenes[state.sceneId];
+  const scene = GAME.scenes?.[state.sceneId];
   if (!scene) {
-    $("#bodyText").textContent = "Scene not found.";
+    console.error(`Scene not found: ${state.sceneId}`);
+    const bodyText = $("#bodyText");
+    if (bodyText) {
+      bodyText.textContent = "Scene not found.";
+    }
     return;
   }
 
   // Header
-  $("#gameTitle").textContent = GAME.meta.title;
-  $("#gameSubtitle").textContent = GAME.meta.subtitle;
-  $("#sceneTitle").textContent = scene.title;
-  $("#stamp").textContent = scene.dossierStamp || "";
+  const gameTitle = $("#gameTitle");
+  if (!gameTitle) {
+    console.error('DOM element not found: gameTitle');
+    return;
+  }
+  gameTitle.textContent = GAME.meta?.title || "";
+
+  const gameSubtitle = $("#gameSubtitle");
+  if (!gameSubtitle) {
+    console.error('DOM element not found: gameSubtitle');
+    return;
+  }
+  gameSubtitle.textContent = GAME.meta?.subtitle || "";
+
+  const sceneTitle = $("#sceneTitle");
+  if (!sceneTitle) {
+    console.error('DOM element not found: sceneTitle');
+    return;
+  }
+  sceneTitle.textContent = scene.title || "";
+
+  const stamp = $("#stamp");
+  if (!stamp) {
+    console.error('DOM element not found: stamp');
+    return;
+  }
+  stamp.textContent = scene.dossierStamp || "";
 
   // Image
   const img = $("#sceneImage");
+  if (!img) {
+    console.error('DOM element not found: sceneImage');
+    return;
+  }
   img.src = scene.image || "";
   img.alt = scene.title || "Scene image";
 
   // Narrative entry
-  $("#bodyText").innerHTML = "";
-  scene.entryText.forEach((p) => {
-    const el = document.createElement("p");
-    el.textContent = p;
-    $("#bodyText").appendChild(el);
-  });
+  const bodyText = $("#bodyText");
+  if (!bodyText) {
+    console.error('DOM element not found: bodyText');
+    return;
+  }
+  bodyText.innerHTML = "";
+  if (Array.isArray(scene.entryText)) {
+    scene.entryText.forEach((p) => {
+      const el = document.createElement("p");
+      el.textContent = p;
+      bodyText.appendChild(el);
+    });
+  }
 
   // Sidebar: clues
   renderClues();
@@ -104,23 +142,34 @@ function render() {
 
   // Actions / hotspots
   const list = $("#hotspotList");
+  if (!list) {
+    console.error('DOM element not found: hotspotList');
+    return;
+  }
   list.innerHTML = "";
 
-  (scene.hotspots || [])
-    .filter((hs) => showIfPasses(hs.showIf))
-    .forEach((hs) => {
-      const btn = document.createElement("button");
-      btn.className = "hotspot";
-      btn.textContent = hs.label;
-      btn.onclick = () => {
-        clickSfx();
-        handleHotspot(hs, scene);
-      };
-      list.appendChild(btn);
-    });
+  if (Array.isArray(scene.hotspots)) {
+    scene.hotspots
+      .filter((hs) => showIfPasses(hs.showIf))
+      .forEach((hs) => {
+        const btn = document.createElement("button");
+        btn.className = "hotspot";
+        btn.textContent = hs.label || "Action";
+        btn.setAttribute("aria-label", `Investigate: ${hs.label || "Action"}`);
+        btn.onclick = () => {
+          clickSfx();
+          handleHotspot(hs, scene);
+        };
+        list.appendChild(btn);
+      });
+  }
 
   // Proceed button (if exists)
   const proceedWrap = $("#proceedWrap");
+  if (!proceedWrap) {
+    console.error('DOM element not found: proceedWrap');
+    return;
+  }
   proceedWrap.innerHTML = "";
   if (scene.proceed) {
     const pbtn = document.createElement("button");
@@ -139,24 +188,39 @@ function render() {
 
 function renderClues() {
   const wrap = $("#clueChips");
+  if (!wrap) {
+    console.error('DOM element not found: clueChips');
+    return;
+  }
   wrap.innerHTML = "";
+
+  const cluesEmpty = $("#cluesEmpty");
+  if (!cluesEmpty) {
+    console.error('DOM element not found: cluesEmpty');
+    return;
+  }
+
   const ids = [...state.clues];
   if (ids.length === 0) {
-    $("#cluesEmpty").style.display = "block";
+    cluesEmpty.style.display = "block";
   } else {
-    $("#cluesEmpty").style.display = "none";
+    cluesEmpty.style.display = "none";
   }
 
   ids.forEach((id) => {
-    const c = GAME.clues[id];
+    const c = GAME.clues?.[id];
+    if (!c) {
+      console.warn(`Clue not found: ${id}`);
+      return;
+    }
     const chip = document.createElement("button");
     chip.className = "chip";
-    chip.textContent = c?.title || id;
+    chip.textContent = c.title || id;
     chip.onclick = () => {
       clickSfx();
       openModal(
-        c?.title || "Clue",
-        [c?.desc || "No description."],
+        c.title || "Clue",
+        [c.desc || "No description."],
         { footer: "Clue recorded." }
       );
     };
@@ -166,19 +230,32 @@ function renderClues() {
 
 function renderLore() {
   const wrap = $("#loreList");
+  if (!wrap) {
+    console.error('DOM element not found: loreList');
+    return;
+  }
   wrap.innerHTML = "";
+
+  if (!GAME.lore) {
+    console.warn('GAME.lore not found');
+    return;
+  }
 
   const allLoreIds = Object.keys(GAME.lore);
   allLoreIds.forEach((id) => {
+    const loreData = GAME.lore[id];
+    if (!loreData) {
+      console.warn(`Lore data not found: ${id}`);
+      return;
+    }
     const unlocked = state.lore.has(id);
     const item = document.createElement("button");
     item.className = "loreItem";
     item.disabled = !unlocked;
-    item.textContent = unlocked ? GAME.lore[id].title : "Lore — Locked";
+    item.textContent = unlocked ? (loreData.title || id) : "Lore — Locked";
     item.onclick = () => {
       clickSfx();
-      const l = GAME.lore[id];
-      openModal(l.title, l.body, { footer: "Lore collected." });
+      openModal(loreData.title || id, loreData.body || [], { footer: "Lore collected." });
     };
     wrap.appendChild(item);
   });
@@ -227,17 +304,57 @@ function handleHotspot(hs, scene) {
 }
 
 function openModal(title, paragraphs = [], opts = {}) {
-  $("#modalTitle").textContent = title;
+  const modalTitle = $("#modalTitle");
+  if (!modalTitle) {
+    console.error('DOM element not found: modalTitle');
+    return;
+  }
+  modalTitle.textContent = title;
+
   const body = $("#modalBody");
+  if (!body) {
+    console.error('DOM element not found: modalBody');
+    return;
+  }
   body.innerHTML = "";
-  paragraphs.forEach((p) => {
-    const el = document.createElement("p");
-    el.textContent = p;
-    body.appendChild(el);
+  if (Array.isArray(paragraphs)) {
+    paragraphs.forEach((p) => {
+      const el = document.createElement("p");
+      el.textContent = p;
+      body.appendChild(el);
+    });
+  }
+
+  const modalFooter = $("#modalFooter");
+  if (!modalFooter) {
+    console.error('DOM element not found: modalFooter');
+    return;
+  }
+  modalFooter.textContent = opts.footer || "";
+
+  const modalChoices = $("#modalChoices");
+  if (!modalChoices) {
+    console.error('DOM element not found: modalChoices');
+    return;
+  }
+  modalChoices.innerHTML = "";
+
+  const modal = $("#modal");
+  if (!modal) {
+    console.error('DOM element not found: modal');
+    return;
+  }
+  modal.classList.add("open");
+
+  // Focus management with double requestAnimationFrame for reliable cross-browser timing
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (firstFocusable) {
+        firstFocusable.focus();
+      }
+    });
   });
-  $("#modalFooter").textContent = opts.footer || "";
-  $("#modalChoices").innerHTML = "";
-  $("#modal").classList.add("open");
 }
 
 function openChoiceModal(title, paragraphs = [], choices = []) {
@@ -314,7 +431,7 @@ function buildEndingText() {
   }
 
   // Variation: solved symbol puzzle
-  if (state.flags.cipherSolved) {
+  if (state.flags.sigilPuzzleSolved) {
     lines.push("The Black Library folio feels heavier now—as if it recognizes you.");
   } else {
     lines.push("You feel the room resisting you, withholding the pages you did not earn.");
@@ -339,13 +456,22 @@ function openSigilOrderPuzzle(puzzle) {
   openModal(puzzle.title, intro, { footer: "Select three sigils in order." });
 
   const wrap = $("#modalChoices");
+  if (!wrap) {
+    console.error('DOM element not found: modalChoices');
+    return;
+  }
   wrap.innerHTML = "";
 
   // Symbol buttons
+  if (!GAME.symbols || !Array.isArray(GAME.symbols)) {
+    console.error('GAME.symbols not found or not an array');
+    return;
+  }
+
   GAME.symbols.forEach((s) => {
     const b = document.createElement("button");
     b.className = "secondary";
-    b.textContent = `${s.glyph}  ${s.label}`;
+    b.textContent = `${s.glyph || "?"}  ${s.label || "Unknown"}`;
     b.onclick = () => {
       clickSfx();
       if (state.puzzle.selected.length >= 3) return;
@@ -375,13 +501,14 @@ function openSigilOrderPuzzle(puzzle) {
     clickSfx();
     const ok =
       state.puzzle.selected.length === 3 &&
+      puzzle.correctOrder &&
       state.puzzle.selected.every((id, i) => id === puzzle.correctOrder[i]);
 
     if (ok) {
       applyEffects(puzzle.effectsOnSolve || []);
       renderLore();
 
-      openModal("Unlocked", puzzle.rewardText, { footer: "Compartment opened." });
+      openModal("Unlocked", puzzle.rewardText || [], { footer: "Compartment opened." });
     } else {
       openModal("Incorrect Order", ["The lock refuses you. The sigils demand hierarchy."], {
         footer: "Try again.",
@@ -391,25 +518,41 @@ function openSigilOrderPuzzle(puzzle) {
 
   controls.appendChild(resetBtn);
   controls.appendChild(submitBtn);
-  $("#modalBody").appendChild(controls);
+
+  const modalBody = $("#modalBody");
+  if (!modalBody) {
+    console.error('DOM element not found: modalBody');
+    return;
+  }
+  modalBody.appendChild(controls);
 
   updatePuzzleFooter(puzzle);
 }
 
 function updatePuzzleFooter(puzzle) {
   const picked = state.puzzle.selected.map((id) => {
-    const s = GAME.symbols.find((x) => x.id === id);
-    return s ? s.glyph : "?";
+    const s = GAME.symbols?.find((x) => x.id === id);
+    return s ? (s.glyph || "?") : "?";
   });
 
-  $("#modalFooter").textContent =
+  const modalFooter = $("#modalFooter");
+  if (!modalFooter) {
+    console.error('DOM element not found: modalFooter');
+    return;
+  }
+  modalFooter.textContent =
     picked.length === 0
       ? "Select three sigils in order."
       : `Selected: ${picked.join("  ")} (${picked.length}/3)`;
 }
 
 function closeModal() {
-  $("#modal").classList.remove("open");
+  const modal = $("#modal");
+  if (!modal) {
+    console.error('DOM element not found: modal');
+    return;
+  }
+  modal.classList.remove("open");
 }
 
 function resetGame() {
@@ -421,16 +564,52 @@ function resetGame() {
   render();
 }
 
+let keyboardListenersInitialized = false;
+
+function setupKeyboardListeners() {
+  if (keyboardListenersInitialized) return;
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = $("#modal");
+      if (modal && modal.classList.contains('open')) {
+        closeModal();
+      }
+    }
+  });
+  
+  keyboardListenersInitialized = true;
+}
+
 function bindUI() {
-  $("#closeModal").onclick = () => {
-    clickSfx();
-    closeModal();
-  };
-  $("#modalBackdrop").onclick = () => closeModal();
-  $("#resetBtn").onclick = () => {
-    clickSfx();
-    resetGame();
-  };
+  const closeModalBtn = $("#closeModal");
+  if (!closeModalBtn) {
+    console.error('DOM element not found: closeModal');
+  } else {
+    closeModalBtn.onclick = () => {
+      clickSfx();
+      closeModal();
+    };
+  }
+
+  const modalBackdrop = $("#modalBackdrop");
+  if (!modalBackdrop) {
+    console.error('DOM element not found: modalBackdrop');
+  } else {
+    modalBackdrop.onclick = () => closeModal();
+  }
+
+  const resetBtn = $("#resetBtn");
+  if (!resetBtn) {
+    console.error('DOM element not found: resetBtn');
+  } else {
+    resetBtn.onclick = () => {
+      clickSfx();
+      resetGame();
+    };
+  }
+
+  setupKeyboardListeners();
 }
 
 bindUI();
